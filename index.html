@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chest Clicker</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+            font-family: sans-serif;
+            display: grid;
+            place-items: center;
+        }
+
+        /* --- Animated TikTok Style Background --- */
+        body {
+            /* Define a vibrant gradient */
+            background: linear-gradient(135deg, #FF6F61, #FFD180, #80D8FF, #EA80FC, #CCFF90);
+            background-size: 400% 400%; /* Make the gradient larger than the viewport */
+            animation: background-tiktok 15s ease infinite alternate; /* Animate it */
+        }
+
+        @keyframes background-tiktok {
+            0% {
+                background-position: 0% 50%; /* Start position */
+            }
+            100% {
+                background-position: 100% 50%; /* End position */
+            }
+        }
+
+        #chest {
+            width: 80vw; /* Changed from 70vw */
+            max-width: 350px; /* Changed from 280px */
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none; 
+            -webkit-tap-highlight-color: transparent;
+            /* Ensure the chest is above the coins */
+            z-index: 5; 
+        }
+
+        .bouncing {
+            animation: bounce 0.35s ease-out; /* Changed duration and easing for more pop */
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(0.85); /* Deeper dip */
+            }
+            60% {
+                transform: scale(1.05); /* Higher pop */
+            }
+            80% {
+                transform: scale(0.98); /* Small rebound */
+            }
+        }
+
+        /* --- Styled Coin Particles --- */
+        .coin-particle {
+            position: absolute;
+            /* Initial size and look of the coin */
+            width: 18px; 
+            height: 18px;
+            background-color: gold;
+            border-radius: 50%; /* Make it round */
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.7), inset 0 0 3px rgba(255, 255, 255, 0.5); /* Inner and outer glow */
+            border: 1px solid #c79f00; /* Darker gold border */
+            
+            z-index: 10;
+            pointer-events: none;
+            animation: fly-out 1s ease-out forwards; /* 1 second animation */
+        }
+
+        /* Coin fly-out animation with rotation */
+        @keyframes fly-out {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                /* Use custom properties for random destination and rotation */
+                transform: translate(var(--tx, 0), var(--ty, -150px)) scale(0.3) rotate(var(--rot, 360deg));
+                opacity: 0; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <img 
+      id="chest" 
+      src="https://i.ibb.co/WNd3dzNs/Chat-GPT-Image-22-2025-12-58-21-1.png" 
+      alt="Treasure Chest"
+    >
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chest = document.getElementById('chest');
+
+            if (!chest) {
+                console.error("Chest element not found!");
+                return;
+            }
+
+            chest.onerror = () => {
+                chest.alt = "Error loading chest image.";
+                chest.style.cssText = "width: 200px; height: 200px; background: #8B4513; border: 4px solid #D2691E; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;";
+                chest.innerHTML = "Chest Image Failed to Load";
+            };
+
+            chest.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            const handleInteract = (e) => {
+                e.preventDefault();
+chest.classList.add('bouncing');
+
+                const chestRect = chest.getBoundingClientRect();
+                const startX = chestRect.left + chestRect.width / 2;
+                const startY = chestRect.top + chestRect.height / 2;
+
+                const coinCount = Math.floor(Math.random() * 8) + 7; // 7 to 14 coins
+
+                for (let i = 0; i < coinCount; i++) {
+                    createCoin(startX, startY);
+                }
+            };
+
+            chest.addEventListener('click', handleInteract);
+            chest.addEventListener('touchstart', handleInteract);
+
+            chest.addEventListener('animationend', (event) => {
+                // Only remove 'bouncing' class if the animation is actually the chest's bounce
+                if (event.animationName === 'bounce') {
+                    chest.classList.remove('bouncing');
+                }
+            });
+
+            function createCoin(startX, startY) {
+                const coin = document.createElement('div'); // Changed to div for styling
+                coin.classList.add('coin-particle');
+                
+                // Randomize coin size slightly
+                const size = Math.random() * (28 - 18) + 18; // Between 18px and 28px (Bigger)
+                coin.style.width = ${size}px;
+                coin.style.height = ${size}px;
+
+                // Adjust start position to center the coin particle based on its size
+                coin.style.left = ${startX - (size / 2)}px;
+                coin.style.top = ${startY - (size / 2)}px;
+
+                // --- Random destination in all directions ---
+                const maxDistance = Math.min(window.innerWidth, window.innerHeight) * 0.4; // Max distance relative to screen size
+                const angle = Math.random() * Math.PI * 2; // Full 360 degrees in radians
+                const distance = Math.random() * maxDistance + 50; // Min 50px distance
+
+                const randomX = Math.cos(angle) * distance;
+                const randomY = Math.sin(angle) * distance;
+                
+                const randomRotation = (Math.random() * 720) - 360; // -360deg to +360deg
+
+                coin.style.setProperty('--tx', ${randomX}px);
+                coin.style.setProperty('--ty', ${randomY}px);
+                coin.style.setProperty('--rot', ${randomRotation}deg); // Set custom property for rotation
+
+                document.body.appendChild(coin);
+
+                setTimeout(() => {
+                    coin.remove();
+                }, 1000); 
+            }
+        });
+    </script>
+
+</body>
+</html>
