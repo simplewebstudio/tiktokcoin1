@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,6 +117,7 @@
                 console.error("Chest element not found!");
                 return;
             }
+
             chest.onerror = () => {
                 chest.alt = "Error loading chest image.";
                 chest.style.cssText = "width: 200px; height: 200px; background: #8B4513; border: 4px solid #D2691E; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;";
@@ -157,12 +159,12 @@
                 
                 // Randomize coin size slightly
                 const size = Math.random() * (28 - 18) + 18; // Between 18px and 28px (Bigger)
-                coin.style.width = ${size}px;
-                coin.style.height = ${size}px;
+                coin.style.width = `${size}px`;
+                coin.style.height = `${size}px`;
 
                 // Adjust start position to center the coin particle based on its size
-                coin.style.left = ${startX - (size / 2)}px;
-                coin.style.top = ${startY - (size / 2)}px;
+                coin.style.left = `${startX - (size / 2)}px`;
+                coin.style.top = `${startY - (size / 2)}px`;
 
                 // --- Random destination in all directions ---
                 const maxDistance = Math.min(window.innerWidth, window.innerHeight) * 0.4; // Max distance relative to screen size
@@ -174,9 +176,9 @@
                 
                 const randomRotation = (Math.random() * 720) - 360; // -360deg to +360deg
 
-                coin.style.setProperty('--tx', ${randomX}px);
-                coin.style.setProperty('--ty', ${randomY}px);
-                coin.style.setProperty('--rot', ${randomRotation}deg); // Set custom property for rotation
+                coin.style.setProperty('--tx', `${randomX}px`);
+                coin.style.setProperty('--ty', `${randomY}px`);
+                coin.style.setProperty('--rot', `${randomRotation}deg`); // Set custom property for rotation
 
                 document.body.appendChild(coin);
 
@@ -189,3 +191,4 @@
 
 </body>
 </html>
+
