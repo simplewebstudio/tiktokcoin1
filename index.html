@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- 
+      This CSP meta tag is added to allow inline scripts ('unsafe-inline'). 
+      Some hosting platforms like GitHub Pages can have strict security
+      policies that block inline JavaScript by default. This tag tells
+      the browser that it's okay to run the <script> tag in this file.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chest Clicker</title>
     <style>
@@ -109,18 +116,19 @@
                 console.error("Chest element not found!");
                 return;
             }
-
             chest.onerror = () => {
                 chest.alt = "Error loading chest image.";
                 chest.style.cssText = "width: 200px; height: 200px; background: #8B4513; border: 4px solid #D2691E; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; text-align: center;";
-                chest.innerHTML = "Chest Image Failed to Load";
+                // Removed the "chest.innerHTML" line as <img> elements cannot contain HTML.
+                // The browser will show the 'alt' text if the image fails.
             };
 
             chest.addEventListener('contextmenu', (e) => e.preventDefault());
 
             const handleInteract = (e) => {
                 e.preventDefault();
-chest.classList.add('bouncing');
+
+                chest.classList.add('bouncing');
 
                 const chestRect = chest.getBoundingClientRect();
                 const startX = chestRect.left + chestRect.width / 2;
